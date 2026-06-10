@@ -1,0 +1,531 @@
+{
+  "MLB": [
+    {
+      "gameId": 6156877,
+      "awayTeamId": 232,
+      "homeTeamId": 235,
+      "startDate": "2026-06-10T02:05:00.0000000Z",
+      "location": "Las Vegas Ballpark",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "MIL @ ATH",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    },
+    {
+      "gameId": 6157144,
+      "awayTeamId": 246,
+      "homeTeamId": 238,
+      "startDate": "2026-06-09T23:07:00.0000000Z",
+      "location": "Rogers Centre",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "PHI @ TOR",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    },
+    {
+      "gameId": 6157815,
+      "awayTeamId": 239,
+      "homeTeamId": 228,
+      "startDate": "2026-06-09T23:40:00.0000000Z",
+      "location": "U.S. Cellular Field",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "ATL @ CWS",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    },
+    {
+      "gameId": 6158089,
+      "awayTeamId": 240,
+      "homeTeamId": 251,
+      "startDate": "2026-06-10T00:40:00.0000000Z",
+      "location": "Coors Field",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "CHC @ COL",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    },
+    {
+      "gameId": 6158357,
+      "awayTeamId": 237,
+      "homeTeamId": 231,
+      "startDate": "2026-06-09T23:40:00.0000000Z",
+      "location": "Ewing M. Kauffman Stadium",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "TEX @ KC",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    },
+    {
+      "gameId": 6158630,
+      "awayTeamId": 242,
+      "homeTeamId": 227,
+      "startDate": "2026-06-10T01:38:00.0000000Z",
+      "location": "Angel Stadium of Anaheim",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "HOU @ LAA",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    },
+    {
+      "gameId": 6158877,
+      "awayTeamId": 241,
+      "homeTeamId": 249,
+      "startDate": "2026-06-10T01:40:00.0000000Z",
+      "location": "PETCO Park",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "CIN @ SD",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    },
+    {
+      "gameId": 6159054,
+      "awayTeamId": 244,
+      "homeTeamId": 250,
+      "startDate": "2026-06-10T01:45:00.0000000Z",
+      "location": "AT&T Park",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "WSH @ SF",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    },
+    {
+      "gameId": 6159173,
+      "awayTeamId": 248,
+      "homeTeamId": 245,
+      "startDate": "2026-06-09T23:10:00.0000000Z",
+      "location": "Citi Field",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "MLB",
+      "status": "Upcoming",
+      "description": "STL @ NYM",
+      "sportSpecificData": {
+        "inning": "",
+        "inningStatus": ""
+      },
+      "league": "MLB",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 23,
+          "value": "2"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        }
+      ]
+    }
+  ],
+  "NBA": [
+    {
+      "gameId": 6162808,
+      "awayTeamId": 24,
+      "homeTeamId": 18,
+      "startDate": "2026-06-11T00:30:00.0000000Z",
+      "location": "Madison Square Garden",
+      "timeRemainingStatus": "Pre-Game",
+      "sport": "NBA",
+      "status": "Pre-Game",
+      "description": "SAS @ NYK",
+      "sportSpecificData": {
+        "timeRemaining": "Pre-Game",
+        "period": "0"
+      },
+      "league": "NBA",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "name": "NBA Finals",
+      "gameAttributes": [
+        {
+          "typeId": 9,
+          "value": "Pre-Game"
+        },
+        {
+          "typeId": 15,
+          "value": "2"
+        },
+        {
+          "typeId": 16,
+          "value": "3"
+        },
+        {
+          "typeId": 23,
+          "value": "3"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        },
+        {
+          "typeId": 32,
+          "value": "ABC"
+        },
+        {
+          "typeId": 52,
+          "value": "0"
+        },
+        {
+          "typeId": 53,
+          "value": "0"
+        },
+        {
+          "typeId": 60,
+          "value": "2"
+        },
+        {
+          "typeId": 61,
+          "value": "1"
+        }
+      ]
+    }
+  ],
+  "NFL": [
+    {
+      "gameId": 6184306,
+      "awayTeamId": 334,
+      "homeTeamId": 354,
+      "startDate": "2026-06-09T16:00:00.0000000Z",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "NFL",
+      "status": "Upcoming",
+      "description": "DET @ PHI",
+      "sportSpecificData": {
+        "timeRemaining": "Upcoming",
+        "quarter": "0"
+      },
+      "league": "SIM",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 22,
+          "value": "76"
+        }
+      ]
+    },
+    {
+      "gameId": 6184304,
+      "awayTeamId": 359,
+      "homeTeamId": 338,
+      "startDate": "2026-06-09T20:00:00.0000000Z",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "NFL",
+      "status": "Upcoming",
+      "description": "SF @ IND",
+      "sportSpecificData": {
+        "timeRemaining": "Upcoming",
+        "quarter": "0"
+      },
+      "league": "SIM",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 22,
+          "value": "76"
+        }
+      ]
+    },
+    {
+      "gameId": 6184305,
+      "awayTeamId": 327,
+      "homeTeamId": 345,
+      "startDate": "2026-06-09T18:00:00.0000000Z",
+      "timeRemainingStatus": "Upcoming",
+      "sport": "NFL",
+      "status": "Upcoming",
+      "description": "CIN @ MIA",
+      "sportSpecificData": {
+        "timeRemaining": "Upcoming",
+        "quarter": "0"
+      },
+      "league": "SIM",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 22,
+          "value": "76"
+        }
+      ]
+    }
+  ],
+  "NHL": [
+    {
+      "gameId": 6181884,
+      "awayTeamId": 4960,
+      "homeTeamId": 58462,
+      "startDate": "2026-06-10T00:00:00.0000000Z",
+      "location": "T-Mobile Arena",
+      "timeRemainingStatus": "Pre-Game",
+      "sport": "NHL",
+      "status": "Pre-Game",
+      "description": "CAR @ VGK",
+      "sportSpecificData": {
+        "timeRemaining": "Pre-Game",
+        "period": "0"
+      },
+      "league": "NHL",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "name": "Stanley Cup Final",
+      "gameAttributes": [
+        {
+          "typeId": 9,
+          "value": "Pre-Game"
+        },
+        {
+          "typeId": 15,
+          "value": "2"
+        },
+        {
+          "typeId": 16,
+          "value": "4"
+        },
+        {
+          "typeId": 23,
+          "value": "3"
+        },
+        {
+          "typeId": 27,
+          "value": "False"
+        },
+        {
+          "typeId": 32,
+          "value": "ABC"
+        },
+        {
+          "typeId": 60,
+          "value": "2"
+        },
+        {
+          "typeId": 61,
+          "value": "1"
+        }
+      ]
+    }
+  ],
+  "SOC": [
+    {
+      "gameId": 6150853,
+      "awayTeamId": 49973,
+      "homeTeamId": 45581,
+      "startDate": "2026-06-15T19:00:00.0000000Z",
+      "location": "CenturyLink Field",
+      "timeRemainingStatus": "",
+      "sport": "SOC",
+      "status": "",
+      "description": "EGY @ BEL",
+      "sportSpecificData": {},
+      "league": "WC",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 2,
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "gameId": 6150854,
+      "awayTeamId": 54386,
+      "homeTeamId": 49319,
+      "startDate": "2026-06-16T01:00:00.0000000Z",
+      "location": "SoFi Stadium",
+      "timeRemainingStatus": "",
+      "sport": "SOC",
+      "status": "",
+      "description": "NZL @ IRN",
+      "sportSpecificData": {},
+      "league": "WC",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 2,
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "gameId": 6150855,
+      "awayTeamId": 49976,
+      "homeTeamId": 45576,
+      "startDate": "2026-06-15T16:00:00.0000000Z",
+      "location": "Mercedes-Benz Stadium",
+      "timeRemainingStatus": "",
+      "sport": "SOC",
+      "status": "",
+      "description": "CPV @ ESP",
+      "sportSpecificData": {},
+      "league": "WC",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 2,
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "gameId": 6150856,
+      "awayTeamId": 45463,
+      "homeTeamId": 49322,
+      "startDate": "2026-06-15T22:00:00.0000000Z",
+      "location": "Hard Rock Stadium",
+      "timeRemainingStatus": "",
+      "sport": "SOC",
+      "status": "",
+      "description": "URU @ KSA",
+      "sportSpecificData": {},
+      "league": "WC",
+      "competitionStatus": "Upcoming",
+      "competitionStatusDetail": "",
+      "gameAttributes": [
+        {
+          "typeId": 2,
+          "value": "1"
+        }
+      ]
+    }
+  ]
+}
