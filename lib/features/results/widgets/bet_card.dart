@@ -129,7 +129,11 @@ class _WonCard extends StatelessWidget {
                         const SizedBox(height: 10),
                       ],
                       if (!hasLegs) const SizedBox(height: 10),
-                      const Divider(color: AppColors.divider, height: 1),
+                      const Divider(
+                        color: Color(0xFF343436),
+                        height: 1,
+                        thickness: 1,
+                      ),
                       const _ShareRow(),
                       _FooterRow(bet: bet),
                     ],
@@ -266,7 +270,11 @@ class _SettledCard extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 9),
-          const Divider(color: AppColors.divider, height: 1),
+          const Divider(
+            color: Color(0xFF343436),
+            height: 1,
+            thickness: 1,
+          ),
           const _ShareRow(),
           _FooterRow(bet: bet),
         ],
@@ -643,7 +651,7 @@ class _SharePill extends StatelessWidget {
     final iconColor = AppColors.textPrimary;
     return Container(
       constraints: framed
-          ? const BoxConstraints(minWidth: 88, minHeight: 32)
+          ? const BoxConstraints(minWidth: 78, minHeight: 30)
           : const BoxConstraints(),
       decoration: framed
           ? BoxDecoration(
@@ -662,16 +670,16 @@ class _SharePill extends StatelessWidget {
           children: [
             SvgPicture.asset(
               'assets/icons/share.svg',
-              width: framed ? 16 : 14,
-              height: framed ? 16 : 14,
+              width: 14,
+              height: 14,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             ),
-            SizedBox(width: framed ? 7 : 5),
+            SizedBox(width: framed ? 6 : 5),
             Text(
               'Share',
               style: TextStyle(
                 color: iconColor,
-                fontSize: framed ? 14 : 12,
+                fontSize: framed ? 13 : 12,
                 fontWeight: FontWeight.w500,
               ),
             ),
