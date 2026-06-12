@@ -671,14 +671,20 @@ class _SharePill extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              framed
-                  ? 'assets/icons/dk_paper_plane_tilt.svg'
-                  : 'assets/icons/share.svg',
-              width: framed ? 13 : 14,
-              height: framed ? 13 : 14,
-              colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-            ),
+            if (framed)
+              Image.asset(
+                'assets/icons/share_native.png',
+                width: 13,
+                height: 13,
+                fit: BoxFit.contain,
+              )
+            else
+              SvgPicture.asset(
+                'assets/icons/share.svg',
+                width: 14,
+                height: 14,
+                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+              ),
             SizedBox(width: framed ? 5 : 5),
             Text(
               'Share',
