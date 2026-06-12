@@ -61,9 +61,9 @@ class _WonCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(3, 3, 3, 8),
+              padding: const EdgeInsets.fromLTRB(4, 4, 4, 12),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(13),
+                borderRadius: BorderRadius.circular(12),
                 child: Container(
                   color: AppColors.cardBg,
                   child: Column(
@@ -628,7 +628,7 @@ class _ShareRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.fromLTRB(14, 9, 14, 6),
+      padding: EdgeInsets.fromLTRB(14, 10, 14, 8),
       child: Row(children: [_SharePill(framed: true)]),
     );
   }
@@ -641,33 +641,37 @@ class _SharePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final iconColor = AppColors.textPrimary;
-    return DecoratedBox(
+    return Container(
+      constraints: framed
+          ? const BoxConstraints(minWidth: 94, minHeight: 38)
+          : const BoxConstraints(),
       decoration: framed
           ? BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(7),
               border: Border.all(color: const Color(0xFF424242), width: 1.0),
             )
-          : const BoxDecoration(),
+          : null,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: framed ? 9 : 0,
-          vertical: framed ? 6 : 0,
+          horizontal: framed ? 13 : 0,
+          vertical: framed ? 0 : 0,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset(
               'assets/icons/share.svg',
-              width: 14,
-              height: 14,
+              width: framed ? 17 : 14,
+              height: framed ? 17 : 14,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             ),
-            const SizedBox(width: 5),
+            SizedBox(width: framed ? 7 : 5),
             Text(
               'Share',
               style: TextStyle(
                 color: iconColor,
-                fontSize: 12,
+                fontSize: framed ? 15 : 12,
                 fontWeight: FontWeight.w500,
               ),
             ),
