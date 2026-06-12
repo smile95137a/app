@@ -21,17 +21,17 @@ class BetStatusTabs extends ConsumerWidget {
     final current = ref.watch(selectedBetTabProvider);
 
     return SizedBox(
-      height: 42,
+      height: 38,
       child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         scrollDirection: Axis.horizontal,
         children: [
           Center(child: _FilterButton(showBadge: current != BetTab.all)),
           Center(
             child: Container(
               width: 2,
-              height: 32,
-              margin: const EdgeInsets.only(left: 12, right: 1),
+              height: 29,
+              margin: const EdgeInsets.only(left: 9),
               decoration: BoxDecoration(
                 color: const Color(0xFF6F6F6F),
                 borderRadius: BorderRadius.circular(1),
@@ -55,8 +55,8 @@ class _FilterButton extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          width: 33,
-          height: 33,
+          width: 31,
+          height: 31,
           decoration: const BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
@@ -111,12 +111,12 @@ class _TabPill extends StatelessWidget {
     return GestureDetector(
       onTap: () => ref.read(selectedBetTabProvider.notifier).state = tab,
       child: Container(
-        margin: const EdgeInsets.only(left: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        margin: const EdgeInsets.only(left: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(15),
           border: Border.all(
             color: isSelected ? Colors.white : const Color(0xFF424242),
             width: 1,
@@ -127,7 +127,7 @@ class _TabPill extends StatelessWidget {
           style: TextStyle(
             color: isSelected ? Colors.black : const Color(0xFFABABAB),
             fontWeight: FontWeight.w500,
-            fontSize: 13,
+            fontSize: 12,
             letterSpacing: 0,
             height: 1,
           ),
