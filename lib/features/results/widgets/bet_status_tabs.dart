@@ -21,7 +21,7 @@ class BetStatusTabs extends ConsumerWidget {
     final current = ref.watch(selectedBetTabProvider);
 
     return SizedBox(
-      height: 38,
+      height: 36,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         scrollDirection: Axis.horizontal,
@@ -30,7 +30,7 @@ class BetStatusTabs extends ConsumerWidget {
           Center(
             child: Container(
               width: 2,
-              height: 29,
+              height: 28,
               margin: const EdgeInsets.only(left: 9),
               decoration: BoxDecoration(
                 color: const Color(0xFF6F6F6F),
@@ -112,13 +112,14 @@ class _TabPill extends StatelessWidget {
       onTap: () => ref.read(selectedBetTabProvider.notifier).state = tab,
       child: Container(
         margin: const EdgeInsets.only(left: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
+        height: 30,
+        padding: const EdgeInsets.symmetric(horizontal: 13),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: isSelected ? Colors.white : const Color(0xFF424242),
+            color: isSelected ? Colors.white : const Color(0xFF3A3A3C),
             width: 1,
           ),
         ),
