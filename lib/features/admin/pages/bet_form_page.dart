@@ -175,7 +175,7 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
                   ],
                 ),
               ),
-              if (betOptions.isNotEmpty) ...[
+              if (!_isParlay && betOptions.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 _label('快速帶入投注選項'),
                 Wrap(
@@ -274,6 +274,8 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
                       );
                     }),
                   ),
+                const SizedBox(height: 16),
+                _buildParlayBoardPicker(boardGames),
               ],
               const SizedBox(height: 16),
               TextFormField(
@@ -470,6 +472,101 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
     _odds.text = option.odds.toString();
   }
 
+  Widget _buildParlayBoardPicker(List<BoardGame> boardGames) {
+    if (boardGames.isEmpty) {
+      return const Text(
+        'No synced board games. Run sync first.',
+        style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+      );
+    }
+
+    final sorted = [...boardGames]..sort((a, b) {
+        final at = a.startTime;
+        final bt = b.startTime;
+        if (at == null && bt == null) return 0;
+        if (at == null) return 1;
+        if (bt == null) return -1;
+        return at.compareTo(bt);
+      });
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _label('Add parlay legs from synced board'),
+        ...sorted.take(40).map((game) {
+          final options = _buildBetOptions(game);
+          return Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.innerCard,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.divider),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${game.awayTeam} @ ${game.homeTeam}',
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${game.league}  ${_startLabel(game.startTime)}',
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 11,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: options.map((option) {
+                    final exists = _parlayLegs.any((leg) =>
+                        leg.gameId == option.gameId &&
+                        leg.selectionName == option.selectionName &&
+                        leg.betType == option.betType &&
+                        leg.lineValue == option.lineValue);
+                    return OutlinedButton(
+                      onPressed: exists
+                          ? null
+                          : () => setState(() => _addParlayLeg(option)),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: exists
+                            ? AppColors.textMuted
+                            : AppColors.textPrimary,
+                        disabledForegroundColor: AppColors.textMuted,
+                        side: BorderSide(
+                          color: exists ? AppColors.green : AppColors.divider,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 7,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        exists ? 'Added' : option.label,
+                        style: const TextStyle(fontSize: 11.5),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
   void _addParlayLeg(_BetOption option) {
     if (option.gameId == null) return;
     _parlayLegs.add(option);
@@ -503,6 +600,18 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
       return ((decimalOdds - 1) * 100).round();
     }
     return (-100 / (decimalOdds - 1)).round();
+  }
+
+  String _startLabel(DateTime? startTime) {
+    if (startTime == null) return '';
+    final hour = startTime.hour == 0
+        ? 12
+        : startTime.hour > 12
+            ? startTime.hour - 12
+            : startTime.hour;
+    final minute = startTime.minute.toString().padLeft(2, '0');
+    final ampm = startTime.hour >= 12 ? 'PM' : 'AM';
+    return '$hour:$minute $ampm';
   }
 
   Future<void> _pickDateTime() async {
