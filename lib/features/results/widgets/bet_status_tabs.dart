@@ -116,18 +116,18 @@ class _TabPill extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 13),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
+          color: Colors.transparent,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: isSelected ? Colors.white : const Color(0xFF3A3A3C),
-            width: 1,
+            width: isSelected ? 2.2 : 1,
           ),
         ),
         child: Text(
           tab.label,
           style: TextStyle(
-            color: isSelected ? Colors.black : const Color(0xFFABABAB),
-            fontWeight: FontWeight.w500,
+            color: isSelected ? Colors.white : const Color(0xFFABABAB),
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             fontSize: 12,
             letterSpacing: 0,
             height: 1,
