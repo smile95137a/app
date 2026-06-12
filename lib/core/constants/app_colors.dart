@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   // ── Surfaces ────────────────────────────────────────────────────────────────
   static const Color background = Color(0xFF121212);  // APK: android:statusBarColor (Theme.Sportsbook)
-  static const Color cardBg    = Color(0xFF1E1E20);  // DK card surface
+  static const Color cardBg    = Color(0xFF242424);  // DK card surface
   static const Color innerCard = Color(0xFF252527);  // nested / cell backgrounds
   static const Color navBar    = Color(0xFF121212);  // APK: android:navigationBarColor (Theme.Sportsbook)
 

@@ -656,7 +656,10 @@ class _SharePill extends StatelessWidget {
       decoration: framed
           ? BoxDecoration(
               borderRadius: BorderRadius.circular(7),
-              border: Border.all(color: const Color(0xFF424242), width: 1.0),
+              border: Border.all(
+                color: const Color(0xFF424242).withValues(alpha: 0.68),
+                width: 1.0,
+              ),
             )
           : null,
       child: Padding(
@@ -680,7 +683,7 @@ class _SharePill extends StatelessWidget {
               style: TextStyle(
                 color: iconColor,
                 fontSize: framed ? 13 : 12,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ],
