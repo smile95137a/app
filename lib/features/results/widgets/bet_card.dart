@@ -651,20 +651,20 @@ class _SharePill extends StatelessWidget {
     final iconColor = AppColors.textPrimary;
     return Container(
       constraints: framed
-          ? const BoxConstraints(minWidth: 78, minHeight: 30)
+          ? const BoxConstraints(minWidth: 72, minHeight: 28)
           : const BoxConstraints(),
       decoration: framed
           ? BoxDecoration(
-              borderRadius: BorderRadius.circular(7),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: const Color(0xFF424242).withValues(alpha: 0.68),
+                color: const Color(0xFF424242).withValues(alpha: 0.58),
                 width: 1.0,
               ),
             )
           : null,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: framed ? 12 : 0,
+          horizontal: framed ? 10 : 0,
           vertical: framed ? 0 : 0,
         ),
         child: Row(
@@ -672,17 +672,19 @@ class _SharePill extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset(
-              'assets/icons/share.svg',
-              width: 14,
-              height: 14,
+              framed
+                  ? 'assets/icons/dk_paper_plane_tilt.svg'
+                  : 'assets/icons/share.svg',
+              width: framed ? 13 : 14,
+              height: framed ? 13 : 14,
               colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
             ),
-            SizedBox(width: framed ? 6 : 5),
+            SizedBox(width: framed ? 5 : 5),
             Text(
               'Share',
               style: TextStyle(
                 color: iconColor,
-                fontSize: framed ? 13 : 12,
+                fontSize: framed ? 12.5 : 12,
                 fontWeight: FontWeight.w700,
               ),
             ),
