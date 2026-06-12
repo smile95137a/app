@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../services/dk_sync_service.dart';
 import '../../../storage/seed_data.dart';
-import '../../bets/providers/bet_provider.dart';
-import '../../games/providers/game_provider.dart';
 import '../../bets/models/bet_slip.dart';
+import '../../bets/providers/bet_provider.dart';
+import '../../board/providers/board_provider.dart';
 import '../../games/models/game.dart';
+import '../../games/providers/game_provider.dart';
 import 'balance_form_page.dart';
 import 'bet_form_page.dart';
 import 'game_form_page.dart';
@@ -36,29 +37,38 @@ class AdminPage extends ConsumerWidget {
           const SizedBox(height: 20),
           _MenuCard(
             icon: Icons.sync_rounded,
-            title: '同步 DraftKings 賽事',
-            subtitle: '從官網抓取今日最新賽程',
+            title: '同步今日賽事',
+            subtitle: '抓取今日賽事並更新下注盤口',
             color: AppColors.green,
-            onTap: () => _syncFromDK(context, ref),
+            onTap: () => _syncTodayBoard(context, ref),
           ),
           _MenuCard(
             icon: Icons.account_balance_wallet,
             title: '帳戶餘額設定',
             subtitle: '更新您的帳戶餘額',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BalanceFormPage())),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const BalanceFormPage()),
+            ),
           ),
           _MenuCard(
             icon: Icons.add_circle_outline,
             title: '新增比賽',
             subtitle: '手動建立比賽項目',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GameFormPage())),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const GameFormPage()),
+            ),
           ),
           _MenuCard(
             icon: Icons.receipt_long,
             title: '新增投注',
             subtitle: '新增一筆投注單',
             color: AppColors.green,
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const BetFormPage())),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const BetFormPage()),
+            ),
           ),
           const SizedBox(height: 8),
           const Text(
@@ -66,17 +76,17 @@ class AdminPage extends ConsumerWidget {
             style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 8),
-          ...bets.map((b) => _BetListItem(bet: b, context: context)),
+          ...bets.map((b) => _BetListItem(bet: b)),
           const SizedBox(height: 16),
           const Text(
             '比賽',
             style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 8),
-          ...games.map((g) => _GameListItem(game: g, context: context, ref: ref)),
+          ...games.map((g) => _GameListItem(game: g)),
           const SizedBox(height: 20),
           _ActionButton(
-            label: '載入示範資料',
+            label: '載入範例資料',
             icon: Icons.data_array,
             color: AppColors.warning,
             onTap: () => _seedData(context, ref),
@@ -94,7 +104,7 @@ class AdminPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _syncFromDK(BuildContext context, WidgetRef ref) async {
+  Future<void> _syncTodayBoard(BuildContext context, WidgetRef ref) async {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -105,22 +115,25 @@ class AdminPage extends ConsumerWidget {
           children: [
             CircularProgressIndicator(color: AppColors.green),
             SizedBox(width: 16),
-            Text('正在同步…', style: TextStyle(color: AppColors.textPrimary)),
+            Text(
+              '正在同步今日賽事...',
+              style: TextStyle(color: AppColors.textPrimary),
+            ),
           ],
         ),
       ),
     );
 
     try {
-      final games = await DkSyncService().fetchGames();
+      final boardGames = await DkSyncService().fetchBoardGames();
 
       if (!context.mounted) return;
       Navigator.pop(context);
 
-      if (games.isEmpty) {
+      if (boardGames.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('未找到賽事資料，請確認網路連線或 VPN'),
+            content: Text('沒有取得今日賽事，請確認網路或 VPN'),
             backgroundColor: AppColors.warning,
           ),
         );
@@ -131,8 +144,10 @@ class AdminPage extends ConsumerWidget {
         context: context,
         builder: (_) => AlertDialog(
           backgroundColor: AppColors.cardBg,
-          title: const Text('確認匯入'),
-          content: Text('找到 ${games.length} 場比賽，是否全部匯入？'),
+          title: const Text('確認同步'),
+          content: Text(
+            '取得 ${boardGames.length} 場今日賽事。要更新後台比賽與下注盤口嗎？',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -140,7 +155,7 @@ class AdminPage extends ConsumerWidget {
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('匯入'),
+              child: const Text('同步'),
             ),
           ],
         ),
@@ -148,14 +163,31 @@ class AdminPage extends ConsumerWidget {
 
       if (confirm != true || !context.mounted) return;
 
-      for (final g in games) {
-        await ref.read(gameProvider.notifier).add(g);
+      await ref.read(boardRepositoryProvider).replaceAll(boardGames);
+      ref.invalidate(boardProvider);
+
+      final now = DateTime.now();
+      for (final bg in boardGames) {
+        await ref.read(gameProvider.notifier).add(
+              Game(
+                id: bg.id,
+                sportType: bg.sport,
+                league: bg.league,
+                homeTeam: bg.homeTeam,
+                awayTeam: bg.awayTeam,
+                startTime: bg.startTime,
+                status: bg.status,
+                scorePeriods: const [],
+                createdAt: now,
+                updatedAt: now,
+              ),
+            );
       }
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('已成功匯入 ${games.length} 場比賽！'),
+            content: Text('已同步 ${boardGames.length} 場今日賽事'),
             backgroundColor: AppColors.greenDarkBadge,
           ),
         );
@@ -177,11 +209,17 @@ class AdminPage extends ConsumerWidget {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.cardBg,
-        title: const Text('載入示範資料'),
-        content: const Text('此操作將新增示範比賽和投注資料，是否繼續？'),
+        title: const Text('載入範例資料'),
+        content: const Text('這會加入範例比賽與投注單，確定要繼續嗎？'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('取消')),
-          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('載入')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('取消'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('載入'),
+          ),
         ],
       ),
     );
@@ -197,7 +235,7 @@ class AdminPage extends ConsumerWidget {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('示範資料已載入！'),
+          content: Text('範例資料已載入'),
           backgroundColor: AppColors.greenDarkBadge,
         ),
       );
@@ -210,13 +248,16 @@ class AdminPage extends ConsumerWidget {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.cardBg,
         title: const Text('清除全部資料'),
-        content: const Text('此操作將刪除所有投注和比賽資料，無法復原。'),
+        content: const Text('這會刪除全部投注單、比賽與同步盤口，確定嗎？'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('取消')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('取消'),
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('確認刪除'),
+            child: const Text('清除'),
           ),
         ],
       ),
@@ -225,11 +266,13 @@ class AdminPage extends ConsumerWidget {
 
     await ref.read(betProvider.notifier).clearAll();
     await ref.read(gameProvider.notifier).clearAll();
+    await ref.read(boardRepositoryProvider).clearAll();
+    ref.invalidate(boardProvider);
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('全部資料已清除。'),
+          content: Text('全部資料已清除'),
           backgroundColor: AppColors.dangerDark,
         ),
       );
@@ -272,8 +315,21 @@ class _MenuCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w700, fontSize: 15)),
-                  Text(subtitle, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -287,9 +343,8 @@ class _MenuCard extends StatelessWidget {
 
 class _BetListItem extends StatelessWidget {
   final BetSlip bet;
-  final BuildContext context;
 
-  const _BetListItem({required this.bet, required this.context});
+  const _BetListItem({required this.bet});
 
   @override
   Widget build(BuildContext context) {
@@ -318,7 +373,11 @@ class _BetListItem extends StatelessWidget {
           ),
           child: Text(
             bet.resultStatus.displayText,
-            style: TextStyle(color: bet.resultStatus.badgeTextColor, fontSize: 11, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              color: bet.resultStatus.badgeTextColor,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         onTap: () => Navigator.push(
@@ -332,10 +391,8 @@ class _BetListItem extends StatelessWidget {
 
 class _GameListItem extends StatelessWidget {
   final Game game;
-  final BuildContext context;
-  final WidgetRef ref;
 
-  const _GameListItem({required this.game, required this.context, required this.ref});
+  const _GameListItem({required this.game});
 
   @override
   Widget build(BuildContext context) {

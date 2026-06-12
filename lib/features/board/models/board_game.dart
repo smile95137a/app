@@ -70,6 +70,26 @@ class BoardGame {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'sport': sport.displayText,
+        'league': league,
+        'awayTeam': awayTeam,
+        'homeTeam': homeTeam,
+        'startDate': startTime?.toUtc().toIso8601String(),
+        'status': status.name,
+        'homeML': homeMoneyline,
+        'awayML': awayMoneyline,
+        'spread': spread,
+        'homeSpread': homeSpread,
+        'awaySpread': awaySpread,
+        'homeSpreadOdds': homeSpreadOdds,
+        'awaySpreadOdds': awaySpreadOdds,
+        'total': total,
+        'overOdds': overOdds,
+        'underOdds': underOdds,
+      };
+
   static GameStatus _parseStatus(String? s) {
     switch ((s ?? '').toLowerCase()) {
       case 'live':

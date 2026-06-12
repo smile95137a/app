@@ -13,6 +13,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox(HiveBoxes.bets);
   await Hive.openBox(HiveBoxes.games);
+  await Hive.openBox(HiveBoxes.boardGames);
   await Hive.openBox(HiveBoxes.balance);
   await Hive.openBox(HiveBoxes.meta);
 
