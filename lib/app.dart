@@ -118,7 +118,7 @@ class _DkBottomNav extends StatelessWidget {
 
   const _DkBottomNav({required this.currentIndex, required this.onTap});
 
-  static const _labels = ['Home', 'Live', 'My Bets', 'Search', 'Rewards'];
+  static const _labels = ['Home', 'Live', 'My Activity', 'Search', 'Rewards'];
 
   @override
   Widget build(BuildContext context) {
@@ -146,9 +146,11 @@ class _DkBottomNav extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       _labels[i],
+                      maxLines: 1,
+                      overflow: TextOverflow.visible,
                       style: TextStyle(
                         color: color,
-                        fontSize: 9.5,
+                        fontSize: i == 2 ? 8.8 : 9.5,
                         fontWeight:
                             selected ? FontWeight.w600 : FontWeight.w400,
                         letterSpacing: 0,
