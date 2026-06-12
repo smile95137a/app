@@ -674,8 +674,8 @@ class _SharePill extends StatelessWidget {
             if (framed)
               Image.asset(
                 'assets/icons/share_native.png',
-                width: 14,
-                height: 14,
+                width: 12.5,
+                height: 12.5,
                 fit: BoxFit.contain,
               )
             else
