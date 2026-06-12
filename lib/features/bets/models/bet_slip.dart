@@ -1,4 +1,5 @@
 import 'bet_status.dart';
+import 'parlay_leg.dart';
 import '../../../features/games/models/sport_type.dart';
 
 class BetSlip {
@@ -17,6 +18,7 @@ class BetSlip {
   final DateTime? settledAt;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final List<ParlayLeg>? legs;
 
   const BetSlip({
     required this.id,
@@ -34,6 +36,7 @@ class BetSlip {
     this.settledAt,
     required this.createdAt,
     required this.updatedAt,
+    this.legs,
   });
 
   String get oddsDisplay => odds > 0 ? '+$odds' : '$odds';
@@ -51,6 +54,7 @@ class BetSlip {
     BetStatus? resultStatus,
     DateTime? placedAt,
     DateTime? settledAt,
+    List<ParlayLeg>? legs,
   }) =>
       BetSlip(
         id: id,
@@ -68,6 +72,7 @@ class BetSlip {
         settledAt: settledAt ?? this.settledAt,
         createdAt: createdAt,
         updatedAt: DateTime.now(),
+        legs: legs ?? this.legs,
       );
 
   Map<String, dynamic> toMap() => {
@@ -86,6 +91,7 @@ class BetSlip {
         'settledAt': settledAt?.millisecondsSinceEpoch,
         'createdAt': createdAt.millisecondsSinceEpoch,
         'updatedAt': updatedAt.millisecondsSinceEpoch,
+        'legs': legs?.map((l) => l.toMap()).toList(),
       };
 
   factory BetSlip.fromMap(Map<String, dynamic> map) => BetSlip(
@@ -106,5 +112,8 @@ class BetSlip {
             : null,
         createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
         updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+        legs: (map['legs'] as List?)
+            ?.map((e) => ParlayLeg.fromMap(Map<String, dynamic>.from(e as Map)))
+            .toList(),
       );
 }

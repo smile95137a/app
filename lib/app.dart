@@ -118,15 +118,15 @@ class _DkBottomNav extends StatelessWidget {
 
   const _DkBottomNav({required this.currentIndex, required this.onTap});
 
-  static const _labels = ['Home', 'Live', 'My Bets', 'All Sports', 'Rewards'];
+  static const _labels = ['Home', 'Live', 'My Bets', 'Search', 'Rewards'];
 
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).padding.bottom;
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.navBar,
-        border: Border(top: BorderSide(color: AppColors.divider, width: 0.5)),
+        color: Colors.black,
+        border: Border(top: BorderSide(color: Color(0xFF1A1A1A), width: 0.5)),
       ),
       padding: EdgeInsets.only(bottom: bottomInset),
       child: SizedBox(
@@ -134,7 +134,7 @@ class _DkBottomNav extends StatelessWidget {
         child: Row(
           children: List.generate(5, (i) {
             final selected = i == currentIndex;
-            final color = selected ? AppColors.green : const Color(0xFF8E8E93);
+            final color = selected ? AppColors.green : const Color(0xFF808080);
             return Expanded(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
@@ -149,8 +149,9 @@ class _DkBottomNav extends StatelessWidget {
                       style: TextStyle(
                         color: color,
                         fontSize: 9.5,
-                        fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                        letterSpacing: -0.1,
+                        fontWeight:
+                            selected ? FontWeight.w600 : FontWeight.w400,
+                        letterSpacing: 0,
                       ),
                     ),
                   ],

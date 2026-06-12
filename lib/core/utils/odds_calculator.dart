@@ -1,4 +1,4 @@
-import '../../../features/bets/models/bet_status.dart';
+import '../../features/bets/models/bet_status.dart';
 
 double calculatePaid(double wager, int odds, BetStatus status) {
   switch (status) {

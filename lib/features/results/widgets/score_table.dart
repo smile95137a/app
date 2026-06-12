@@ -13,7 +13,7 @@ class ScoreTable extends StatelessWidget {
   //   scoreboard_interval_score_min_height:       20dp  ← score cell rows
   //   scoreboard_interval_label_min_height:       18dp  ← header label row
   static const double _nameW  = 118;
-  static const double _colW   = 24;   // regular period column
+  static const double _colW   = 30;   // regular period column
   static const double _totalW = 37;   // 'T' total column
   static const double _scoreH = 20;   // score cell min-height
   static const double _labelH = 18;   // header label min-height
@@ -98,7 +98,7 @@ class ScoreTable extends StatelessWidget {
                               e.value,
                               style: TextStyle(
                                 color: isTotal
-                                    ? AppColors.warning
+                                    ? AppColors.textPrimary
                                     : AppColors.textMuted,
                                 fontSize: 10,
                                 fontWeight: isTotal

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 
 class AppTheme {
   static ThemeData get dark {
-    final base = ThemeData(brightness: Brightness.dark);
+    final base = ThemeData(brightness: Brightness.dark, fontFamily: 'Inter');
     return base.copyWith(
       scaffoldBackgroundColor: AppColors.background,
-      textTheme: GoogleFonts.interTextTheme(base.textTheme).apply(
+      textTheme: base.textTheme.apply(
+        fontFamily: 'Inter',
         bodyColor: AppColors.textPrimary,
         displayColor: AppColors.textPrimary,
       ),

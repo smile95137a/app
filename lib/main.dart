@@ -23,7 +23,7 @@ void main() async {
 
 Future<void> _seedIfNeeded() async {
   final meta = Hive.box(HiveBoxes.meta);
-  const seedVersion = 5;
+  const seedVersion = 6;
   if (meta.get('seedVersion') == seedVersion) return;
 
   final gameRepo = GameRepository();

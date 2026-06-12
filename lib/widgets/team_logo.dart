@@ -306,6 +306,12 @@ class TeamLogo extends StatelessWidget {
               width: size,
               height: size,
               fit: BoxFit.contain,
+              // ESPN CDN blocks Dart's default UA on Android/iOS.
+              headers: const {
+                'User-Agent':
+                    'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 '
+                    '(KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+              },
               errorBuilder: (_, __, ___) =>
                   _Fallback(color: color, abbr: abbr, size: size),
               loadingBuilder: (_, child, progress) => progress == null

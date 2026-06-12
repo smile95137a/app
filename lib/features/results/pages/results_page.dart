@@ -54,10 +54,11 @@ class _SectionTabBar extends StatelessWidget {
   const _SectionTabBar();
 
   static const _tabs = [
-    'My Bets',
-    'My Horse Bets',
+    'Bets',
+    'Trades',
+    'Horse Bets',
     'Betting Groups',
-    'My Pools',
+    'Pools',
   ];
 
   @override
@@ -68,32 +69,39 @@ class _SectionTabBar extends StatelessWidget {
       children: [
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             children: _tabs.asMap().entries.map((entry) {
               final isActive = entry.key == 0;
               return Padding(
-                padding: const EdgeInsets.only(right: 24),
+                padding: const EdgeInsets.only(right: 17),
                 child: IntrinsicWidth(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
                         entry.value,
+                        maxLines: 1,
+                        softWrap: false,
                         style: TextStyle(
                           color: isActive
                               ? AppColors.textPrimary
-                              : AppColors.textSecondary,
-                          fontSize: 15,
+                              : const Color(0xFFB8B8B8),
+                          fontSize: 16,
                           fontWeight:
                               isActive ? FontWeight.w600 : FontWeight.w400,
+                          letterSpacing: 0,
                           height: 1,
                         ),
                       ),
                       const SizedBox(height: 10),
                       Container(
-                        height: 2,
-                        color: isActive ? AppColors.green : Colors.transparent,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color:
+                              isActive ? AppColors.green : Colors.transparent,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                     ],
                   ),

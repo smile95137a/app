@@ -38,6 +38,20 @@ flutter:
     - assets/images/profile_placeholder.png
     - assets/images/gold_border_bet_card.webp
     - assets/images/mybets_winner_noise.jpg
-    - assets/images/won_bet_header_native.png
+    - assets/images/mybets_winner_header.svg
     - assets/icons/
     - assets/data/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter_regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter_medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter_semi_bold.ttf
+          weight: 600
+        - asset: assets/fonts/inter_bold.ttf
+          weight: 700
+        - asset: assets/fonts/inter_extra_bold.ttf
+          weight: 800

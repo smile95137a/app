@@ -1,5 +1,6 @@
 import '../features/bets/models/bet_slip.dart';
 import '../features/bets/models/bet_status.dart';
+import '../features/bets/models/parlay_leg.dart';
 import '../features/games/models/game.dart';
 import '../features/games/models/game_status.dart';
 import '../features/games/models/score_period.dart';
@@ -95,6 +96,31 @@ class SeedData {
           createdAt: DateTime(2026, 6, 9),
           updatedAt: DateTime(2026, 6, 9),
         ),
+        Game(
+          id: 'game-cry-ars-final',
+          sportType: SportType.soccer,
+          league: 'Premier League',
+          awayTeam: 'Crystal Palace',
+          homeTeam: 'Arsenal',
+          startTime: DateTime(2026, 6, 9, 15, 0),
+          status: GameStatus.finalGame,
+          scorePeriods: const [
+            ScorePeriod(
+                teamType: 'AWAY', periodLabel: 'H1', score: 1, sortOrder: 0),
+            ScorePeriod(
+                teamType: 'AWAY', periodLabel: 'H2', score: 0, sortOrder: 1),
+            ScorePeriod(
+                teamType: 'AWAY', periodLabel: 'T', score: 1, sortOrder: 2),
+            ScorePeriod(
+                teamType: 'HOME', periodLabel: 'H1', score: 0, sortOrder: 0),
+            ScorePeriod(
+                teamType: 'HOME', periodLabel: 'H2', score: 0, sortOrder: 1),
+            ScorePeriod(
+                teamType: 'HOME', periodLabel: 'T', score: 0, sortOrder: 2),
+          ],
+          createdAt: DateTime(2026, 6, 9),
+          updatedAt: DateTime(2026, 6, 9),
+        ),
       ];
 
   static List<BetSlip> get bets => [
@@ -145,6 +171,32 @@ class SeedData {
           settledAt: DateTime(2026, 6, 9, 23, 20),
           createdAt: DateTime(2026, 6, 9),
           updatedAt: DateTime(2026, 6, 9),
+          legs: const [
+            ParlayLeg(
+              selectionName: 'LA Dodgers',
+              lineValue: '-1.5',
+              odds: -110,
+              betType: 'Run Line',
+              gameId: 'game-col-lad-final',
+              won: true,
+            ),
+            ParlayLeg(
+              selectionName: 'SA Spurs',
+              lineValue: '-3.5',
+              odds: -110,
+              betType: 'Spread',
+              gameId: 'game-okc-sas-final',
+              won: true,
+            ),
+            ParlayLeg(
+              selectionName: 'Crystal Palace',
+              lineValue: null,
+              odds: 220,
+              betType: 'Moneyline',
+              gameId: 'game-cry-ars-final',
+              won: true,
+            ),
+          ],
         ),
         BetSlip(
           id: 'bet-sas-spread-open',
