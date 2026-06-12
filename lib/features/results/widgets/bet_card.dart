@@ -651,7 +651,7 @@ class _SharePill extends StatelessWidget {
     final iconColor = AppColors.textPrimary;
     return Container(
       constraints: framed
-          ? const BoxConstraints(minWidth: 72, minHeight: 28)
+          ? const BoxConstraints(minWidth: 66, minHeight: 26)
           : const BoxConstraints(),
       decoration: framed
           ? BoxDecoration(
@@ -664,7 +664,7 @@ class _SharePill extends StatelessWidget {
           : null,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: framed ? 10 : 0,
+          horizontal: framed ? 8 : 0,
           vertical: framed ? 0 : 0,
         ),
         child: Row(
@@ -674,8 +674,8 @@ class _SharePill extends StatelessWidget {
             if (framed)
               Image.asset(
                 'assets/icons/share_native.png',
-                width: 13,
-                height: 13,
+                width: 12,
+                height: 12,
                 fit: BoxFit.contain,
               )
             else
@@ -685,12 +685,12 @@ class _SharePill extends StatelessWidget {
                 height: 14,
                 colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
               ),
-            SizedBox(width: framed ? 5 : 5),
+            SizedBox(width: framed ? 4 : 5),
             Text(
               'Share',
               style: TextStyle(
                 color: iconColor,
-                fontSize: framed ? 12.5 : 12,
+                fontSize: framed ? 12 : 12,
                 fontWeight: FontWeight.w700,
               ),
             ),
