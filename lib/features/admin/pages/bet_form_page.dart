@@ -5,6 +5,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/odds_calculator.dart';
 import '../../bets/models/bet_slip.dart';
 import '../../bets/models/bet_status.dart';
+import '../../bets/models/parlay_leg.dart';
 import '../../bets/providers/bet_provider.dart';
 import '../../board/models/board_game.dart';
 import '../../board/providers/board_provider.dart';
@@ -31,6 +32,8 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
   late final TextEditingController _odds;
   late final TextEditingController _wager;
   late DateTime _placedAt;
+  late bool _isParlay;
+  final List<_BetOption> _parlayLegs = [];
 
   // 投注類型（中文顯示，值保持英文供邏輯使用）
   final _betTypes = ['Spread', 'Moneyline', 'Total', 'Total Corners', 'Other'];
@@ -55,6 +58,19 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
     _wager = TextEditingController(
         text: b != null ? b.wagerAmount.toStringAsFixed(2) : '10.00');
     _placedAt = b?.placedAt ?? DateTime.now();
+    _isParlay = b?.legs?.isNotEmpty ?? false;
+    _parlayLegs.addAll(
+      (b?.legs ?? const <ParlayLeg>[]).map(
+        (leg) => _BetOption(
+          label: '${leg.selectionDisplay} ${leg.oddsDisplay}',
+          selectionName: leg.selectionName,
+          betType: leg.betType,
+          lineValue: leg.lineValue,
+          odds: leg.odds,
+          gameId: leg.gameId,
+        ),
+      ),
+    );
   }
 
   @override
@@ -111,15 +127,53 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
                   final game = _firstWhereOrNull(games, (g) => g.id == v);
                   final board =
                       game == null ? null : _findBoardGame(game, boardGames);
-                  if (board != null) {
+                  if (!_isParlay && board != null) {
                     _applyBetOption(_buildBetOptions(board).first);
-                  } else if (game != null && _selection.text.trim().isEmpty) {
+                  } else if (!_isParlay &&
+                      game != null &&
+                      _selection.text.trim().isEmpty) {
                     _selection.text = game.awayTeam;
                     _betType.text = 'Moneyline';
                     _lineValue.clear();
                   }
                 }),
                 validator: (v) => (v == null) ? '請先選擇比賽' : null,
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.innerCard,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.divider),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _isParlay ? '串關模式' : '單注模式',
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Switch(
+                      value: _isParlay,
+                      activeThumbColor: AppColors.green,
+                      activeTrackColor: AppColors.greenDarkBadge,
+                      onChanged: (value) => setState(() {
+                        _isParlay = value;
+                        if (_isParlay) {
+                          _syncParlayFields();
+                        } else if (betOptions.isNotEmpty) {
+                          _applyBetOption(betOptions.first);
+                        }
+                      }),
+                    ),
+                  ],
+                ),
               ),
               if (betOptions.isNotEmpty) ...[
                 const SizedBox(height: 12),
@@ -130,8 +184,13 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
                   children: betOptions
                       .map(
                         (option) => OutlinedButton(
-                          onPressed: () =>
-                              setState(() => _applyBetOption(option)),
+                          onPressed: () => setState(() {
+                            if (_isParlay) {
+                              _addParlayLeg(option);
+                            } else {
+                              _applyBetOption(option);
+                            }
+                          }),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.textPrimary,
                             side: const BorderSide(color: AppColors.divider),
@@ -151,6 +210,70 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
                       )
                       .toList(),
                 ),
+              ],
+              if (_isParlay) ...[
+                const SizedBox(height: 16),
+                _label('Parlay legs (${_parlayLegs.length})'),
+                if (_parlayLegs.isEmpty)
+                  const Text(
+                    'Select a game, then tap an odds option to add a leg.',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                    ),
+                  )
+                else
+                  Column(
+                    children: List.generate(_parlayLegs.length, (index) {
+                      final leg = _parlayLegs[index];
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.innerCard,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.divider),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${leg.selectionDisplay} ${leg.oddsDisplay}',
+                                    style: const TextStyle(
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    leg.betType,
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () => setState(() {
+                                _parlayLegs.removeAt(index);
+                                _syncParlayFields();
+                              }),
+                              icon: const Icon(Icons.close),
+                              color: AppColors.textSecondary,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
               ],
               const SizedBox(height: 16),
               TextFormField(
@@ -290,12 +413,14 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
         selectionName: game.awayTeam,
         betType: 'Moneyline',
         odds: game.awayMoneyline,
+        gameId: game.id,
       ),
       _BetOption(
         label: '${game.homeTeam} ML ${BoardGame.fmtOdds(game.homeMoneyline)}',
         selectionName: game.homeTeam,
         betType: 'Moneyline',
         odds: game.homeMoneyline,
+        gameId: game.id,
       ),
       _BetOption(
         label:
@@ -304,6 +429,7 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
         betType: 'Spread',
         lineValue: BoardGame.fmtSpread(game.awaySpread),
         odds: game.awaySpreadOdds,
+        gameId: game.id,
       ),
       _BetOption(
         label:
@@ -312,6 +438,7 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
         betType: 'Spread',
         lineValue: BoardGame.fmtSpread(game.homeSpread),
         odds: game.homeSpreadOdds,
+        gameId: game.id,
       ),
       _BetOption(
         label: 'Over $total ${BoardGame.fmtOdds(game.overOdds)}',
@@ -319,6 +446,7 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
         betType: 'Total',
         lineValue: total,
         odds: game.overOdds,
+        gameId: game.id,
       ),
       _BetOption(
         label: 'Under $total ${BoardGame.fmtOdds(game.underOdds)}',
@@ -326,6 +454,7 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
         betType: 'Total',
         lineValue: total,
         odds: game.underOdds,
+        gameId: game.id,
       ),
     ];
   }
@@ -339,6 +468,41 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
     _betType.text = option.betType;
     _lineValue.text = option.lineValue ?? '';
     _odds.text = option.odds.toString();
+  }
+
+  void _addParlayLeg(_BetOption option) {
+    if (option.gameId == null) return;
+    _parlayLegs.add(option);
+    _syncParlayFields();
+  }
+
+  void _syncParlayFields() {
+    if (!_isParlay) return;
+    _selection.text =
+        _parlayLegs.isEmpty ? '' : '${_parlayLegs.length} Pick Parlay';
+    _betType.text = _parlayLegs.map((leg) => leg.selectionDisplay).join(', ');
+    _lineValue.clear();
+    if (_parlayLegs.isNotEmpty) {
+      _odds.text = _calculateParlayOdds(_parlayLegs).toString();
+    }
+  }
+
+  int _calculateParlayOdds(List<_BetOption> legs) {
+    var decimalOdds = 1.0;
+    for (final leg in legs) {
+      decimalOdds *= _americanToDecimal(leg.odds);
+    }
+    return _decimalToAmerican(decimalOdds);
+  }
+
+  double _americanToDecimal(int odds) =>
+      odds > 0 ? 1 + odds / 100 : 1 + 100 / odds.abs();
+
+  int _decimalToAmerican(double decimalOdds) {
+    if (decimalOdds >= 2) {
+      return ((decimalOdds - 1) * 100).round();
+    }
+    return (-100 / (decimalOdds - 1)).round();
   }
 
   Future<void> _pickDateTime() async {
@@ -362,18 +526,40 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+    if (_isParlay && _parlayLegs.length < 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Parlay needs at least 2 legs.')),
+      );
+      return;
+    }
 
     final games = ref.read(gameProvider);
-    final game = games.firstWhere((g) => g.id == _selectedGameId!);
+    final gameIdForBet =
+        _isParlay ? _parlayLegs.first.gameId! : _selectedGameId!;
+    final game = games.firstWhere((g) => g.id == gameIdForBet);
     final wager = double.parse(_wager.text);
     final odds = int.parse(_odds.text);
     final paid = calculatePaid(wager, odds, _status);
+    final legs = _isParlay
+        ? _parlayLegs
+            .map(
+              (leg) => ParlayLeg(
+                selectionName: leg.selectionName,
+                lineValue: leg.lineValue,
+                odds: leg.odds,
+                betType: leg.betType,
+                gameId: leg.gameId!,
+                won: _status == BetStatus.won,
+              ),
+            )
+            .toList()
+        : null;
 
     final now = DateTime.now();
     final bet = BetSlip(
       id: widget.editBet?.id ?? _uuid.v4(),
       betCode: widget.editBet?.betCode ?? 'MK${now.millisecondsSinceEpoch}',
-      gameId: _selectedGameId!,
+      gameId: gameIdForBet,
       sportType: game.sportType,
       selectionName: _selection.text.trim(),
       betType: _betType.text.trim(),
@@ -386,6 +572,7 @@ class _BetFormPageState extends ConsumerState<BetFormPage> {
       settledAt: _status != BetStatus.open ? now : null,
       createdAt: widget.editBet?.createdAt ?? now,
       updatedAt: now,
+      legs: legs,
     );
 
     if (widget.editBet == null) {
@@ -412,6 +599,7 @@ class _BetOption {
   final String betType;
   final String? lineValue;
   final int odds;
+  final String? gameId;
 
   const _BetOption({
     required this.label,
@@ -419,5 +607,12 @@ class _BetOption {
     required this.betType,
     required this.odds,
     this.lineValue,
+    this.gameId,
   });
+
+  String get oddsDisplay => odds > 0 ? '+$odds' : '$odds';
+
+  String get selectionDisplay => lineValue != null && lineValue!.isNotEmpty
+      ? '$selectionName $lineValue'
+      : selectionName;
 }
