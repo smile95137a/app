@@ -8,6 +8,7 @@
     "test": "test"
   },
   "scripts": {
+    "fetch:dk": "node dk_fetcher/fetch_sportsbook.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +17,7 @@
   "type": "commonjs",
   "dependencies": {
     "jimp": "^0.22.12",
+    "playwright": "^1.60.0",
     "sharp": "^0.34.5"
   }
 }

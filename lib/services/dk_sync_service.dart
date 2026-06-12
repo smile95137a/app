@@ -6,6 +6,19 @@ import '../features/games/models/game_status.dart';
 import '../features/games/models/sport_type.dart';
 
 class DkSyncService {
+  static final Uri _worldCupMarketsUri = Uri.parse(
+    'https://sportsbook-nash.draftkings.com/sites/US-SB/api/sportscontent/'
+    'controldata/league/leagueSubcategory/v1/markets'
+    '?isBatchable=false'
+    '&templateVars=209533'
+    '&eventsQuery=%24filter%3DleagueId%20eq%20%27209533%27%20AND%20'
+    'clientMetadata%2FSubcategories%2Fany%28s%3A%20s%2FId%20eq%20%274514%27%29'
+    '&marketsQuery=%24filter%3DclientMetadata%2FsubCategoryId%20eq%20%274514%27%20'
+    'AND%20tags%2Fall%28t%3A%20t%20ne%20%27SportcastBetBuilder%27%29'
+    '&include=Events'
+    '&entity=events',
+  );
+
   static const _endpoints = <_EspnEndpoint>[
     _EspnEndpoint(SportType.mlb, 'MLB', 'baseball', 'mlb'),
     _EspnEndpoint(SportType.nba, 'NBA', 'basketball', 'nba'),
@@ -35,6 +48,12 @@ class DkSyncService {
   }
 
   Future<List<BoardGame>> fetchBoardGames({DateTime? date}) async {
+    final dkBoard = await _fetchDraftKingsSportsbookBoard();
+    if (dkBoard.isNotEmpty) return dkBoard;
+    return _fetchEspnBoard(date: date);
+  }
+
+  Future<List<BoardGame>> _fetchEspnBoard({DateTime? date}) async {
     final targetDate = date ?? DateTime.now();
     final yyyymmdd = '${targetDate.year.toString().padLeft(4, '0')}'
         '${targetDate.month.toString().padLeft(2, '0')}'
@@ -68,6 +87,159 @@ class DkSyncService {
       return at.compareTo(bt);
     });
     return games;
+  }
+
+  Future<List<BoardGame>> _fetchDraftKingsSportsbookBoard() async {
+    try {
+      final response = await http.get(
+        _worldCupMarketsUri,
+        headers: const {
+          'Accept': 'application/json, text/plain, */*',
+          'Origin': 'https://sportsbook.draftkings.com',
+          'Referer':
+              'https://sportsbook.draftkings.com/leagues/soccer/world-cup-2026',
+          'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+                  '(KHTML, like Gecko) Chrome/125.0 Safari/537.36',
+        },
+      );
+      if (response.statusCode != 200) return const [];
+
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final games = _boardGamesFromSportsbookMarkets(data);
+      games.sort((a, b) {
+        final at = a.startTime;
+        final bt = b.startTime;
+        if (at == null && bt == null) return 0;
+        if (at == null) return 1;
+        if (bt == null) return -1;
+        return at.compareTo(bt);
+      });
+      return games;
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  List<BoardGame> _boardGamesFromSportsbookMarkets(Map<String, dynamic> data) {
+    final markets = (data['markets'] as List? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .toList();
+    final selections = (data['selections'] as List? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .toList();
+
+    final selectionsByMarket = <String, List<Map<String, dynamic>>>{};
+    for (final selection in selections) {
+      final marketId = selection['marketId'] as String?;
+      if (marketId == null) continue;
+      selectionsByMarket.putIfAbsent(marketId, () => []).add(selection);
+    }
+
+    final moneylineMarketByEvent = <String, Map<String, dynamic>>{};
+    for (final market in markets) {
+      final name = (market['name'] as String? ?? '').toLowerCase();
+      final eventId = market['eventId'] as String?;
+      if (eventId == null || name != 'moneyline') continue;
+      moneylineMarketByEvent[eventId] = market;
+    }
+
+    final games = <BoardGame>[];
+    for (final rawEvent in data['events'] as List? ?? const []) {
+      final event = rawEvent as Map<String, dynamic>;
+      final eventId = event['id'] as String?;
+      if (eventId == null) continue;
+
+      final participants = (event['participants'] as List? ?? const [])
+          .whereType<Map<String, dynamic>>()
+          .toList();
+      final home = _sportsbookParticipant(participants, 'Home');
+      final away = _sportsbookParticipant(participants, 'Away');
+      if (home == null || away == null) continue;
+
+      final market = moneylineMarketByEvent[eventId];
+      if (market == null) continue;
+
+      final marketSelections = selectionsByMarket[market['id']] ?? const [];
+      final homeMl = _sportsbookOdds(marketSelections, 'Home');
+      final awayMl = _sportsbookOdds(marketSelections, 'Away');
+      if (homeMl == null || awayMl == null) continue;
+
+      final id = 'dk-sb-$eventId';
+      final fallback = _fallbackOdds(id, SportType.soccer);
+      games.add(
+        BoardGame(
+          id: id,
+          sport: SportType.soccer,
+          league: 'World Cup 2026',
+          awayTeam: (away['name'] as String? ?? '').trim(),
+          homeTeam: (home['name'] as String? ?? '').trim(),
+          startTime: DateTime.tryParse(
+            (event['startEventDate'] as String? ?? '').replaceFirst(
+              '.0000000Z',
+              'Z',
+            ),
+          )?.toLocal(),
+          status: _parseSportsbookStatus(event['status']),
+          homeMoneyline: homeMl,
+          awayMoneyline: awayMl,
+          spread: fallback.spread,
+          homeSpread: fallback.homeSpread,
+          awaySpread: fallback.awaySpread,
+          homeSpreadOdds: fallback.homeSpreadOdds,
+          awaySpreadOdds: fallback.awaySpreadOdds,
+          total: fallback.total,
+          overOdds: fallback.overOdds,
+          underOdds: fallback.underOdds,
+        ),
+      );
+    }
+    return games;
+  }
+
+  Map<String, dynamic>? _sportsbookParticipant(
+    List<Map<String, dynamic>> participants,
+    String venueRole,
+  ) {
+    for (final participant in participants) {
+      if (participant['venueRole'] == venueRole) return participant;
+    }
+    return null;
+  }
+
+  int? _sportsbookOdds(
+    List<Map<String, dynamic>> selections,
+    String outcomeType,
+  ) {
+    for (final selection in selections) {
+      if (selection['outcomeType'] != outcomeType) continue;
+      final displayOdds = selection['displayOdds'] as Map<String, dynamic>?;
+      return _parseAmericanOdds(displayOdds?['american'] as String?);
+    }
+    return null;
+  }
+
+  int? _parseAmericanOdds(String? value) {
+    if (value == null) return null;
+    return int.tryParse(value.replaceAll('+', '').trim());
+  }
+
+  GameStatus _parseSportsbookStatus(Object? raw) {
+    switch ((raw as String? ?? '').toUpperCase()) {
+      case 'IN_PROGRESS':
+      case 'STARTED':
+        return GameStatus.live;
+      case 'FINAL':
+      case 'COMPLETED':
+        return GameStatus.finalGame;
+      case 'CANCELED':
+      case 'CANCELLED':
+      case 'POSTPONED':
+      case 'SUSPENDED':
+        return GameStatus.canceled;
+      default:
+        return GameStatus.scheduled;
+    }
   }
 
   BoardGame? _boardGameFromEspnEvent(
